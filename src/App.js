@@ -1,19 +1,21 @@
 import React, { useState, useEffect, useMemo } from "react";
-//import './App.css';
-import { AgGridReact } from "ag-grid-react";
+
+import { AgGridReact, AgGridColumn } from "ag-grid-react";
+import "ag-grid-enterprise";
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 import { Grid, Button } from "@material-ui/core";
 import FormDialog from "./components/dialog";
 import useFetch from "./components/useFetch";
 import diff from "./components/diff";
-import MakePatch from "./components/MakePatch";
+
 import axios from "axios";
 
 const initialValue = { Name: "", Vorname: "", Strasse: "", PLZ: "", Ort: "" };
 
 function App() {
   const [gridApi, setGridApi] = useState(null);
+  const [gridColumnApi, setGridColumnApi] = useState(null);
   const [tableData, setTableData] = useState(null);
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState(initialValue);
@@ -28,7 +30,7 @@ function App() {
     setFormData(initialValue);
   };
 
-  const url = `http://scheffler-hardcore.de:2010/hardcore/dp/DP_T_Mitarbeiter`;
+  const url = `http://scheffler-hardcore.de:2010/hardcore/dp/DP_T_Mitarbeiter?$expand=fkLohnartID`;
   const columnDefs = [
     { headerName: "Name", field: "Name" },
     { headerName: "Vorname", field: "Vorname" },
@@ -87,7 +89,13 @@ function App() {
   };
   const onGridReady = (params) => {
     setGridApi(params);
-    console.log(params);
+    setGridColumnApi(params.columnApi);
+    console.log(params.columnApi);
+  };
+  const onFirstDataRendered = (params) => {
+    setTimeout(function () {
+      params.api.getDisplayedRowAtIndex(1).setExpanded(true);
+    }, 0);
   };
 
   // setting update row data to form data and opening pop up window
@@ -171,7 +179,40 @@ function App() {
           rowData={tableData}
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
+          masterDetail={true}
+          detailCellRendererParams={{
+            detailGridOptions: {
+              rowSelection: "multiple",
+              suppressRowClickSelection: true,
+              enableRangeSelection: true,
+              pagination: true,
+              paginationAutoPageSize: true,
+              columnDefs: [
+                {
+                  field: "Stundenlohn",
+                },
+                { field: "Festlohn" },
+                {
+                  field: "MaxStunden",
+                },
+
+                {
+                  field: "MaxLohn",
+                  minWidth: 150,
+                },
+              ],
+              defaultColDef: {
+                sortable: true,
+                flex: 1,
+              },
+            },
+            getDetailRowData: function (params) {
+              params.successCallback(params?.data?.fkLohnartID);
+            },
+          }}
           onGridReady={onGridReady}
+          onFirstDataRendered={onFirstDataRendered}
+          //rowData={tableData}
         />
       </div>
       <FormDialog

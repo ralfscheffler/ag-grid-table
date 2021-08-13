@@ -14,7 +14,18 @@ export default function FormDialog({
   onChange,
   handleFormSubmit,
 }) {
-  const { id, Vorname, Name, Strasse, PLZ, Ort } = data;
+  const {
+    id,
+    Vorname,
+    Name,
+    Strasse,
+    PLZ,
+    Ort,
+    Geburtsdatum,
+    Staatsangehoerigkeit,
+    Betrieb,
+    farbe,
+  } = data;
   console.log(id, Vorname);
   return (
     <div>
@@ -24,7 +35,7 @@ export default function FormDialog({
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description">
         <DialogTitle id="alert-dialog-title">
-          {id ? "Update user" : "Create new user"}
+          {id ? "Edit/Update" : "Neuer Mitarbeiter"}
         </DialogTitle>
         <DialogContent>
           <form>
@@ -74,6 +85,46 @@ export default function FormDialog({
               onChange={(e) => onChange(e)}
               placeholder="Enter Ort"
               label="Ort"
+              variant="outlined"
+              margin="dense"
+              fullWidth
+            />
+            <TextField
+              id="Geburtsdatum"
+              type="date"
+              value={Geburtsdatum}
+              onChange={(e) => onChange(e)}
+              label="Geburtsdatum"
+              variant="outlined"
+              margin="dense"
+            />
+            <TextField
+              id="Staatsangehoerigkeit"
+              value={Staatsangehoerigkeit}
+              onChange={(e) => onChange(e)}
+              placeholder="Enter Staatsangehörigkeit"
+              label="Staatsangehoerigkeit"
+              variant="outlined"
+              margin="dense"
+              fullWidth
+            />
+            <TextField
+              id="Betrieb"
+              value={Betrieb}
+              onChange={(e) => onChange(e)}
+              placeholder="Enter Betrieb"
+              label="Betrieb"
+              variant="outlined"
+              margin="dense"
+              fullWidth
+            />
+            <TextField
+              id="farbe"
+              type="color"
+              value={farbe}
+              onChange={(e) => onChange(e)}
+              placeholder="Enter farbe"
+              label="Farbe"
               variant="outlined"
               margin="dense"
               fullWidth
