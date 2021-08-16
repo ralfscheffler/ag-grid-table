@@ -26,7 +26,7 @@ export default function FormDialog({
     Betrieb,
     farbe,
   } = data;
-  console.log(id, Vorname);
+  //console.log(id, Vorname);
   return (
     <div>
       <Dialog

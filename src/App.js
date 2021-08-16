@@ -88,13 +88,12 @@ function App() {
     setFormData({ ...formData, [id]: value });
   };
   const onGridReady = (params) => {
-    setGridApi(params);
+    setGridApi(params.api);
     setGridColumnApi(params.columnApi);
-    console.log(params.columnApi);
   };
   const onFirstDataRendered = (params) => {
     setTimeout(function () {
-      params.api.getDisplayedRowAtIndex(1).setExpanded(true);
+      //params.api.getDisplayedRowAtIndex(4).setExpanded(true);
     }, 0);
   };
 
@@ -166,54 +165,67 @@ function App() {
     floatingFilter: true,
   };
   return (
-    <div className="App">
-      <h1 align="center">React-App</h1>
-      <h3>CRUD Operation with Json-server in ag-Grid</h3>
-      <Grid align="right">
-        <Button variant="contained" color="primary" onClick={handleClickOpen}>
-          Add user
-        </Button>
-      </Grid>
-      <div className="ag-theme-alpine" style={{ height: "400px" }}>
-        <AgGridReact
-          rowData={tableData}
-          columnDefs={columnDefs}
-          defaultColDef={defaultColDef}
-          masterDetail={true}
-          detailCellRendererParams={{
-            detailGridOptions: {
-              rowSelection: "multiple",
-              suppressRowClickSelection: true,
-              enableRangeSelection: true,
-              pagination: true,
-              paginationAutoPageSize: true,
-              columnDefs: [
-                {
-                  field: "Stundenlohn",
-                },
-                { field: "Festlohn" },
-                {
-                  field: "MaxStunden",
-                },
+    <div style={{ width: "100%", height: "100%" }}>
+      <div
+        id="myGrid"
+        style={{
+          height: "100%",
+          width: "100%",
+        }}
+        className="ag-theme-alpine"></div>
+      <div className="App">
+        <h1 align="center">React-App</h1>
+        <h3>CRUD Operation with Json-server in ag-Grid</h3>
+        <Grid align="right">
+          <Button variant="contained" color="primary" onClick={handleClickOpen}>
+            Add user
+          </Button>
+        </Grid>
+        <div className="ag-theme-alpine" style={{ height: "400px" }}>
+          <AgGridReact
+            //rowData={tableData}
+            groupDefaultExpanded={1}
+            columnDefs={columnDefs}
+            defaultColDef={defaultColDef}
+            masterDetail={true}
+            detailCellRendererParams={{
+              detailGridOptions: {
+                rowSelection: "multiple",
+                //suppressRowClickSelection: true,
+                enableRangeSelection: true,
+                pagination: true,
+                paginationAutoPageSize: true,
+                columnDefs: [
+                  {
+                    field: "Stundenlohn",
+                  },
+                  { field: "Festlohn" },
+                  {
+                    field: "MaxStunden",
+                  },
 
-                {
-                  field: "MaxLohn",
-                  minWidth: 150,
+                  {
+                    field: "MaxLohn",
+                    minWidth: 150,
+                  },
+                ],
+                defaultColDef: {
+                  sortable: true,
+                  flex: 1,
                 },
-              ],
-              defaultColDef: {
-                sortable: true,
-                flex: 1,
               },
-            },
-            getDetailRowData: function (params) {
-              params.successCallback(params?.data?.fkLohnartID);
-            },
-          }}
-          onGridReady={onGridReady}
-          onFirstDataRendered={onFirstDataRendered}
-          //rowData={tableData}
-        />
+              getDetailRowData: function (params) {
+                var lohnarray = [];
+                lohnarray.push(params.data.fkLohnartID);
+                params.successCallback(lohnarray);
+                console.log(lohnarray);
+              },
+            }}
+            onGridReady={onGridReady}
+            onFirstDataRendered={onFirstDataRendered}
+            rowData={tableData}
+          />
+        </div>
       </div>
       <FormDialog
         open={open}
