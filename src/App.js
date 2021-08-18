@@ -32,7 +32,7 @@ function App() {
 
   const url = `http://scheffler-hardcore.de:2010/hardcore/dp/DP_T_Mitarbeiter?$expand=fkLohnartID`;
   const columnDefs = [
-    { headerName: "Name", field: "Name" },
+    { headerName: "Name", field: "Name", cellRenderer: "agGroupCellRenderer" },
     { headerName: "Vorname", field: "Vorname" },
     { headerName: "Strasse", field: "Strasse" },
     { headerName: "PLZ", field: "PLZ" },
@@ -65,11 +65,43 @@ function App() {
   const data = useFetch(url, setTableData);
 
   const deleteUsers = async (id) => {
+    var url = `http://scheffler-hardcore.de:2010/hardcore/dp/DP_T_Mitarbeiter`;
     const result = await axios.delete(url + `(${id})`);
     if (result.status === 204) {
       getUsers();
     }
     console.log(result);
+  };
+
+  const patchUsers = async (id, data) => {
+    var url = `http://scheffler-hardcore.de:2010/hardcore/dp/DP_T_Mitarbeiter`;
+    const result = await axios.patch(url + id, data);
+    if (result.status === 200) {
+      getUsers();
+    }
+  };
+
+  const createUser = async (data) => {
+    const jobResult = await axios.post(
+      `http://scheffler-hardcore.de:2010/hardcore/dp/DP_L_Job`,
+      { fest: 0 }
+    );
+    if (jobResult.status === 201) {
+      data.fkJobsID = { job_id: jobResult.data.job_id };
+    }
+
+    const lohnResult = await axios.post(
+      `http://scheffler-hardcore.de:2010/hardcore/dp/DP_T_Lohnform`,
+      { MaxLohn: 0 }
+    );
+    if (lohnResult.status === 201) {
+      data.fkLohnartID = { id: lohnResult.data.id };
+    }
+
+    const result = await axios.post(url, data);
+    if (result.status === 201) {
+      getUsers();
+    }
   };
 
   const getUsers = async () => {
@@ -118,6 +150,7 @@ function App() {
     }
   };
   const handleFormSubmit = () => {
+    var url = `http://scheffler-hardcore.de:2010/hardcore/dp/DP_T_Mitarbeiter`;
     if (formData.id) {
       //updating a user
       const confirm = window.confirm(
@@ -126,35 +159,36 @@ function App() {
 
       const data = diff(oldFormData, formData);
 
-      data &&
-        confirm &&
-        fetch(url + `(${formData.id})`, {
-          method: "PATCH",
-          body: JSON.stringify(data),
-          headers: {
-            "content-type": "application/json",
-          },
-        })
-          .then((resp) => resp.json())
-          .then((resp) => {
-            handleClose();
-            getUsers();
-          });
+      data && confirm && patchUsers(`(${formData.id})`, data);
+      // fetch(url + `(${formData.id})`, {
+      //   method: "PATCH",
+      //   body: JSON.stringify(data),
+      //   headers: {
+      //     "content-type": "application/json",
+      //   },
+      // })
+      //   .then((resp) => resp.json())
+      //   .then((resp) => {
+      //     handleClose();
+      //     getUsers();
+      //   });
       handleClose();
     } else {
       // adding new user
-      fetch(url, {
-        method: "POST",
-        body: JSON.stringify(formData),
-        headers: {
-          "content-type": "application/json",
-        },
-      })
-        .then((resp) => resp.json())
-        .then((resp) => {
-          handleClose();
-          getUsers();
-        });
+      createUser(formData);
+      handleClose();
+      // fetch(url, {
+      //   method: "POST",
+      //   body: JSON.stringify(formData),
+      //   headers: {
+      //     "content-type": "application/json",
+      //   },
+      // })
+      //   .then((resp) => resp.json())
+      //   .then((resp) => {
+      //     handleClose();
+      //     getUsers();
+      //   });
     }
   };
 
@@ -183,8 +217,6 @@ function App() {
         </Grid>
         <div className="ag-theme-alpine" style={{ height: "400px" }}>
           <AgGridReact
-            //rowData={tableData}
-            groupDefaultExpanded={1}
             columnDefs={columnDefs}
             defaultColDef={defaultColDef}
             masterDetail={true}
@@ -217,8 +249,9 @@ function App() {
               getDetailRowData: function (params) {
                 var lohnarray = [];
                 lohnarray.push(params.data.fkLohnartID);
+
                 params.successCallback(lohnarray);
-                console.log(lohnarray);
+                //console.log(lohnarray);
               },
             }}
             onGridReady={onGridReady}

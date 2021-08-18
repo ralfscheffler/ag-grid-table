@@ -26,7 +26,8 @@ export default function FormDialog({
     Betrieb,
     farbe,
   } = data;
-  //console.log(id, Vorname);
+
+  //console.log(Stundenlohn);
   return (
     <div>
       <Dialog
@@ -129,6 +130,26 @@ export default function FormDialog({
               margin="dense"
               fullWidth
             />
+            {/* <TextField
+              id="maxlohn"
+              type="number"
+              value={data.fkLohnartID && MaxLohn}
+              onChange={(e) => onChange(e)}
+              placeholder="Enter max. Lohn"
+              label="Maxlohn"
+              variant="outlined"
+              margin="dense"
+            />
+            <TextField
+              id="lohn"
+              type="number"
+              value={data.fkLohnartID && Stundenlohn}
+              onChange={(e) => onChange(e)}
+              placeholder="Enter Stundenlohn"
+              label="Stundenlohn"
+              variant="outlined"
+              margin="dense"
+            /> */}
           </form>
         </DialogContent>
         <DialogActions>
