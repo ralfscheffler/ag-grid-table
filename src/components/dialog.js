@@ -25,9 +25,10 @@ export default function FormDialog({
     Staatsangehoerigkeit,
     Betrieb,
     farbe,
+    fkLohnartID,
   } = data;
 
-  //console.log(Stundenlohn);
+  console.log(fkLohnartID);
   return (
     <div>
       <Dialog
@@ -130,26 +131,46 @@ export default function FormDialog({
               margin="dense"
               fullWidth
             />
-            {/* <TextField
-              id="maxlohn"
+            <TextField
+              id="fkLohnartID.Festlohn"
               type="number"
-              value={data.fkLohnartID && MaxLohn}
+              value={fkLohnartID?.Festlohn}
               onChange={(e) => onChange(e)}
-              placeholder="Enter max. Lohn"
-              label="Maxlohn"
+              placeholder="Enter Festlohn"
+              label="Festlohn"
               variant="outlined"
               margin="dense"
             />
             <TextField
-              id="lohn"
+              id="fkLohnartID.Stundenlohn"
               type="number"
-              value={data.fkLohnartID && Stundenlohn}
+              value={fkLohnartID?.Stundenlohn}
               onChange={(e) => onChange(e)}
               placeholder="Enter Stundenlohn"
               label="Stundenlohn"
               variant="outlined"
               margin="dense"
-            /> */}
+            />
+            <TextField
+              id="fkLohnartID.MaxLohn"
+              type="number"
+              value={fkLohnartID?.MaxLohn}
+              onChange={(e) => onChange(e)}
+              placeholder="Enter max.Lohn"
+              label="Maxlohn"
+              variant="outlined"
+              margin="dense"
+            />
+            <TextField
+              id="fkLohnartID.MaxStunden"
+              type="number"
+              value={fkLohnartID?.MaxStunden}
+              onChange={(e) => onChange(e)}
+              placeholder="Enter max. Stunden"
+              label="Maxstunden"
+              variant="outlined"
+              margin="dense"
+            />
           </form>
         </DialogContent>
         <DialogActions>
