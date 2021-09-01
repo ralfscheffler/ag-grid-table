@@ -75,7 +75,8 @@ function App() {
 
   const patchUsers = async (id, data) => {
     var url = `http://scheffler-hardcore.de:2010/hardcore/dp/DP_T_Mitarbeiter`;
-    const result = await axios.patch(url + id, data);
+    var expand = `?$expand=fkLohnartID, fkJobsID`;
+    const result = await axios.patch(url + id + expand, data);
     if (result.status === 200) {
       getUsers();
     }
@@ -116,8 +117,11 @@ function App() {
   const onChange = (e) => {
     const { value, id } = e.target;
     console.log(value, id);
-
-    setFormData({ ...formData, [id]: value });
+    if (id.includes("fkLohnartID")) {
+      setFormData({ ...formData, fkLohnartID: { [id]: value } });
+    } else {
+      setFormData({ ...formData, [id]: value });
+    }
   };
   const onGridReady = (params) => {
     setGridApi(params.api);
@@ -143,10 +147,6 @@ function App() {
     );
     if (confirm) {
       deleteUsers(id);
-      /* fetch(url + `(${id})`, { method: "DELETE" })
-        .then((resp) => resp.json())
-        .then((resp) => getUsers()); */
-      //getUsers();
     }
   };
   const handleFormSubmit = () => {
@@ -160,35 +160,12 @@ function App() {
       const data = diff(oldFormData, formData);
 
       data && confirm && patchUsers(`(${formData.id})`, data);
-      // fetch(url + `(${formData.id})`, {
-      //   method: "PATCH",
-      //   body: JSON.stringify(data),
-      //   headers: {
-      //     "content-type": "application/json",
-      //   },
-      // })
-      //   .then((resp) => resp.json())
-      //   .then((resp) => {
-      //     handleClose();
-      //     getUsers();
-      //   });
+
       handleClose();
     } else {
       // adding new user
       createUser(formData);
       handleClose();
-      // fetch(url, {
-      //   method: "POST",
-      //   body: JSON.stringify(formData),
-      //   headers: {
-      //     "content-type": "application/json",
-      //   },
-      // })
-      //   .then((resp) => resp.json())
-      //   .then((resp) => {
-      //     handleClose();
-      //     getUsers();
-      //   });
     }
   };
 

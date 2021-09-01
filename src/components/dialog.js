@@ -133,7 +133,7 @@ export default function FormDialog({
             />
             <TextField
               id="fkLohnartID.Festlohn"
-              type="number"
+              //type="number"
               value={fkLohnartID?.Festlohn}
               onChange={(e) => onChange(e)}
               placeholder="Enter Festlohn"
